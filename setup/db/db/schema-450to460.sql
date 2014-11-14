@@ -20,3 +20,5 @@
 --
 
 INSERT IGNORE INTO `cloud`.`configuration` VALUES ("Advanced", 'DEFAULT', 'management-server', "stats.output.uri", "", "URI to additionally send StatsCollector statistics to", "", NULL, NULL, 0);
+
+ALTER TABLE `cloud`.`vm_instance` ADD COLUMN `user_id` bigint unsigned NOT NULL COMMENT 'user id of VM deployer';
