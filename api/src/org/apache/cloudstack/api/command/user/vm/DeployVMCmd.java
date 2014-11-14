@@ -54,6 +54,7 @@ import org.apache.cloudstack.api.response.ProjectResponse;
 import org.apache.cloudstack.api.response.SecurityGroupResponse;
 import org.apache.cloudstack.api.response.ServiceOfferingResponse;
 import org.apache.cloudstack.api.response.TemplateResponse;
+import org.apache.cloudstack.api.response.UserResponse;
 import org.apache.cloudstack.api.response.UserVmResponse;
 import org.apache.cloudstack.api.response.ZoneResponse;
 import org.apache.cloudstack.context.CallContext;
@@ -95,9 +96,13 @@ public class DeployVMCmd extends BaseAsyncCreateCustomIdCmd {
     @Parameter(name = ApiConstants.DISPLAY_NAME, type = CommandType.STRING, description = "an optional user generated name for the virtual machine")
     private String displayName;
 
-    //Owner information
+    //Owner account information
     @Parameter(name = ApiConstants.ACCOUNT, type = CommandType.STRING, description = "an optional account for the virtual machine. Must be used with domainId.")
     private String accountName;
+
+    //Owner userId
+    @Parameter(name = ApiConstants.USER_ID, type = CommandType.UUID, entityType = UserResponse.class, required = true, description = "the user ID of the owner, optional to use with account and domainId. If not provided logged in user's ID is used.")
+    private Long userId;
 
     @Parameter(name = ApiConstants.DOMAIN_ID, type = CommandType.UUID, entityType = DomainResponse.class, description = "an optional domainId for the virtual machine. If the account parameter is used, domainId must also be used.")
     private Long domainId;
@@ -198,6 +203,13 @@ public class DeployVMCmd extends BaseAsyncCreateCustomIdCmd {
             return CallContext.current().getCallingAccount().getAccountName();
         }
         return accountName;
+    }
+
+    public Long getUserId() {
+        if (this.userId == null) {
+            return CallContext.current().getCallingUserId();
+        }
+        return userId;
     }
 
     public Long getDiskOfferingId() {
